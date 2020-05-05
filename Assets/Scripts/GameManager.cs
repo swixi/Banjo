@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public float restartDelay = 1f;
     public Text goalText;
-    public BallMovement ball;
+    public PlayerManager player;
 
     // Start is called before the first frame update
     void Start()
@@ -26,8 +26,7 @@ public class GameManager : MonoBehaviour
         //update scores here?
 
         goalText.enabled = true;
-        ball.Freeze();
-
+        player.Freeze();
 
         Invoke("Reset", restartDelay);
     }

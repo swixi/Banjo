@@ -1,0 +1,31 @@
+﻿using UnityEngine;
+
+public class PlayerManager : MonoBehaviour
+{
+    public Rigidbody playerRB;
+    public float force = 10f;
+    public Transform playerTransform;
+    public Vector3 playerStartingPos;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        playerTransform.position = playerStartingPos;
+    }    
+
+    void FixedUpdate()
+    {
+        if(Input.GetKey("w") || Input.GetKey("up"))
+            playerRB.AddForce(0, 0, Time.deltaTime * force, ForceMode.Impulse);
+        if(Input.GetKey("a") || Input.GetKey("left"))
+            playerRB.AddForce(-(Time.deltaTime * force), 0, 0, ForceMode.Impulse);
+        if(Input.GetKey("s") || Input.GetKey("down"))
+            playerRB.AddForce(0, 0, -(Time.deltaTime * force), ForceMode.Impulse);
+        if(Input.GetKey("d") || Input.GetKey("right"))
+            playerRB.AddForce(Time.deltaTime * force, 0, 0, ForceMode.Impulse);
+    }
+
+    public void Freeze() {
+        force = 0f;
+    }
+}
