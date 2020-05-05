@@ -43,3 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db2b13ec3d09ea8469cc2d73c1084835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  restartDelay: 1
+  goalText: {fileID: 0}
+  playerCount: 1
+  playerPrefab: {fileID: 1485801215581311245, guid: 260ed55a343d9694c8d510fe50e5ec2a,
+    type: 3}

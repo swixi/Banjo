@@ -5,12 +5,11 @@ public class PlayerManager : MonoBehaviour
     public Rigidbody playerRB;
     public float force = 10f;
     public Transform playerTransform;
-    public Vector3 playerStartingPos;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerTransform.position = playerStartingPos;
+        
     }    
 
     void FixedUpdate()
