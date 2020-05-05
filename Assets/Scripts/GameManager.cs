@@ -17,7 +17,8 @@ public class GameManager : MonoBehaviour
     {
         players = new List<GameObject>();
         
-        for(int i = 0; i < playerCount; i++) {
+        for(int i = 0; i < playerCount; i++) 
+        {
             GameObject player = Instantiate(playerPrefab, new Vector3(10+(10*i), 0, 0), Quaternion.identity);
             //the top of the field is y=0.5, this places the player on the ground
             player.transform.position = new Vector3(10+(10*i), player.transform.localScale.y/2 + 0.5f, 0);
@@ -31,7 +32,8 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void GoalScored() {
+    public void GoalScored() 
+    {
         //update scores here?
 
         goalText.enabled = true;
@@ -41,7 +43,8 @@ public class GameManager : MonoBehaviour
         Invoke("Reset", restartDelay);
     }
 
-    public void Reset() {
+    public void Reset() 
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

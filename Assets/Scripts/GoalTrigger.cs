@@ -2,7 +2,8 @@
 
 public class GoalTrigger : MonoBehaviour
 {
-    void OnTriggerEnter(Collider collider) {
+    void OnTriggerEnter(Collider collider) 
+    {
         if(collider.tag == "ball")
             FindObjectOfType<GameManager>().GoalScored();
     }

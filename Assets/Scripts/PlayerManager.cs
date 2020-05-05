@@ -24,7 +24,16 @@ public class PlayerManager : MonoBehaviour
             playerRB.AddForce(Time.deltaTime * force, 0, 0, ForceMode.Impulse);
     }
 
-    public void Freeze() {
+    public void Freeze() 
+    {
         force = 0f;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.tag == "ball")
+        {
+            collision.collider.GetComponent<BallManager>().SetAttachedPlayer(this);
+        }
     }
 }
