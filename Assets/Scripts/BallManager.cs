@@ -6,9 +6,12 @@ public class BallManager : MonoBehaviour
 {
     public Transform ballTransform; //not needed? just use (this.)transform?
     public Rigidbody ballRB;
+    public float kickForce = 10f;
+    public float offset = 1f;
+
     private bool attachedToPlayer = false;
     private PlayerManager attachedPlayer;
-    public float kickForce = 10f;
+    
 
     void Update()
     {
@@ -43,7 +46,7 @@ public class BallManager : MonoBehaviour
     {
         if(attachedToPlayer)
         {
-            float offsetDistance = this.transform.localScale.x+0.5f;
+            float offsetDistance = attachedPlayer.transform.localScale.x + offset;
             ballTransform.position = attachedPlayer.GetOffset(offsetDistance);
         }
     }
