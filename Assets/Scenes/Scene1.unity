@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.43679234, g: 0.48441833, b: 0.56467396, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 7a24b0fdbaa797d43b5759fb36b2437d,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -939,18 +940,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 559611549611342642}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2145308785 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2145308785, guid: 7fcf5ad61771d964f91920ea4c237d00,
-    type: 3}
-  m_PrefabInstance: {fileID: 2611516200464258862}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6458acede5f169e46872a3879a3a675e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &559611549611342642
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1332,7 +1321,7 @@ PrefabInstance:
         type: 3}
       propertyPath: ball
       value: 
-      objectReference: {fileID: 2145308785}
+      objectReference: {fileID: 0}
     - target: {fileID: 4270059401450803170, guid: 84c509158d5adcf4b89729cbf4efb6b3,
         type: 3}
       propertyPath: player

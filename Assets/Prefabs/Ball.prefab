@@ -124,3 +124,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballTransform: {fileID: 2611516199460620097}
+  ballRB: {fileID: 2611516199460620126}
+  kickForce: 20

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
             GameObject player = Instantiate(playerPrefab, new Vector3(10+(10*i), 0, 0), Quaternion.identity);
             //the top of the field is y=0.5, this places the player on the ground
             player.transform.position = new Vector3(10+(10*i), player.transform.localScale.y/2 + 0.5f, 0);
+            player.GetComponent<PlayerManager>().SetControlMode(i);
             players.Add(player);
         }
     }
