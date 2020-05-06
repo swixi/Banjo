@@ -17,6 +17,7 @@ public class BallManager : MonoBehaviour
     {
         //Kick the ball 
         //Is this in the right place?
+        //TODO: kick ball toward a mouse click: see https://docs.unity3d.com/Manual/nav-MoveToClickPoint.html, maybe need to project a vector onto zx-plane
         if(Input.GetKey("f") && IsAttached())
         {
             ballRB.AddForce(kickForce * attachedPlayer.GetUnitDirection(), ForceMode.Impulse);

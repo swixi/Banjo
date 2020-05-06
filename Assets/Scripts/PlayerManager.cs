@@ -27,10 +27,13 @@ public class PlayerManager : MonoBehaviour
     {
         ForceMode mode = ForceMode.Impulse;
 
-        
-        float angle = Mathf.Atan2(playerRB.velocity.x, playerRB.velocity.z) * Mathf.Rad2Deg;
-        Debug.Log(angle);
-        transform.rotation = Quaternion.Euler(0, angle, 0);
+        if(playerRB.velocity.magnitude > 0.1)
+        {
+            //based on the orientation of the map, the cube is moving in the zx-plane (z is horizontal)
+            //get the angle of the velocity vector in this plane, then rotate around the y axis
+            float angle = Mathf.Atan2(playerRB.velocity.x, playerRB.velocity.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, angle, 0);
+        }
 
         if(controlMode == 0)
         {
@@ -101,18 +104,17 @@ public class PlayerManager : MonoBehaviour
     }
 
     //never return the zero vector: this makes rendering go bonkers
-    //if the velocity magnitude drops below, say 0.01, then it is a sign the player is coming to a standstill
+    //if the velocity magnitude drops below, say 0.1, then it is a sign the player is coming to a standstill
     //in this case, return the last known nonzero velocity vector direction
     public Vector3 GetUnitDirection()
     {
         float vel = playerRB.velocity.magnitude;
         Vector3 unitDirection = playerRB.velocity.normalized;
 
-        if(vel > 0)
+        //if you make this vel > 0, it will sometimes set lastNonzeroUnitDirection to the zero vector; probably rounding error
+        if(vel > 0.2)
             lastNonzeroUnitDirection = unitDirection;
 
-        Debug.Log(vel);
-
-        return vel < 5 ? lastNonzeroUnitDirection : unitDirection;
+        return vel < 0.5 ? lastNonzeroUnitDirection : unitDirection;
     }
 }
