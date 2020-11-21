@@ -10,7 +10,9 @@ public class PlayerManager : MonoBehaviour
     public int controlMode = 0;
 
     //arbitrary default, gets used if e.g. player has never moved or if there is crazy friction that would cause a drop to 0 vel in less than a frame
-    private Vector3 lastNonzeroUnitDirection = Vector3.right; 
+    private Vector3 lastNonzeroUnitDirection = Vector3.right;
+
+    public BallManager attachedBall;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +22,23 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        
+        if (controlMode == 0)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Field")))
+                {
+                    Debug.Log("You clicked on the field at " + hit.point.ToString());
+                    if(attachedBall != null)
+                    {
+                        attachedBall.KickTo(hit);
+                        attachedBall = null;
+                    }
+                }
+            }
+        }
     }
 
     void FixedUpdate()
@@ -53,6 +71,12 @@ public class PlayerManager : MonoBehaviour
             {
                 playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
             }
+            if (Input.GetKey("f") && attachedBall != null)
+            {
+                attachedBall.KickStraight();
+                attachedBall = null;
+            }
+
         }
         else
         {
@@ -89,7 +113,8 @@ public class PlayerManager : MonoBehaviour
     {
         if(collision.collider.tag == "ball")
         {
-            collision.collider.GetComponent<BallManager>().SetAttachedPlayer(this);
+            attachedBall = collision.collider.GetComponent<BallManager>();
+            attachedBall.SetAttachedPlayer(this);
         }
     }
 
