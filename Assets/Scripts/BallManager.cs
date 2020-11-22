@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Mirror;
 
-public class BallManager : MonoBehaviour
+public class BallManager : NetworkBehaviour
 {
     public Transform ballTransform; //not needed? just use (this.)transform?
     public Rigidbody ballRB;
@@ -11,17 +10,39 @@ public class BallManager : MonoBehaviour
 
     private bool attachedToPlayer = false;
     private PlayerManager attachedPlayer;
-    
 
+    public Vector3 spawnPoint;
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        //only simulate ball physics on server
+        ballRB.isKinematic = false;
+
+        // Serve the ball from left player
+        //rigidbody2d.velocity = Vector2.right * speed;
+    }
+    
     void Update()
     {
         //Kick the ball 
         //Is this in the right place?
         //TODO: kick ball toward a mouse click: see https://docs.unity3d.com/Manual/nav-MoveToClickPoint.html, maybe need to project a vector onto zx-plane
-        if(Input.GetKey("f") && IsAttached())
+        //if(Input.GetKey("f") && IsAttached())
+        //{
+        //    ballRB.velocity = kickForce * attachedPlayer.GetUnitDirection();
+        //    RemoveAttachedPlayer();
+        //}
+    }
+
+    //state machine here?
+    void FixedUpdate()
+    {
+        if(attachedToPlayer)
         {
-            ballRB.AddForce(kickForce * attachedPlayer.GetUnitDirection(), ForceMode.Impulse);
-            RemoveAttachedPlayer();
+            float offsetDistance = attachedPlayer.transform.localScale.x + offset;
+            ballTransform.position = attachedPlayer.GetOffset(offsetDistance);
         }
     }
 
@@ -42,13 +63,18 @@ public class BallManager : MonoBehaviour
         attachedToPlayer = false;
     }
 
-    //state machine here?
-    void FixedUpdate()
+    [Server]
+    void OnCollisionEnter(Collision collision)
     {
-        if(attachedToPlayer)
+        if(collision.collider.tag == "player")
         {
-            float offsetDistance = attachedPlayer.transform.localScale.x + offset;
-            ballTransform.position = attachedPlayer.GetOffset(offsetDistance);
+            SetAttachedPlayer(collision.collider.GetComponent<PlayerManager>());
         }
+    }
+
+
+    public void SetToSpawn()
+    {
+        transform.position = spawnPoint;
     }
 }

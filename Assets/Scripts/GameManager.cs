@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Mirror;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public float restartDelay = 1f;
     public Text goalText;
     private List<GameObject> players;
     public int playerCount = 1;
     public GameObject playerPrefab;
+    public NetworkManagerBanjo networkManager;
 
     // Start is called before the first frame update
     void Start()
@@ -22,15 +24,9 @@ public class GameManager : MonoBehaviour
             GameObject player = Instantiate(playerPrefab, new Vector3(10+(10*i), 0, 0), Quaternion.identity);
             //the top of the field is y=0.5, this places the player on the ground
             player.transform.position = new Vector3(10+(10*i), player.transform.localScale.y/2 + 0.5f, 0);
-            player.GetComponent<PlayerManager>().SetControlMode(i);
+            //player.GetComponent<PlayerManager>().SetControlMode(i);
             players.Add(player);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void GoalScored() 
@@ -38,15 +34,22 @@ public class GameManager : MonoBehaviour
         //update scores here?
 
         goalText.enabled = true;
+
+        networkManager.PrepareForNewRound();
+        
+        /*
         foreach (GameObject player in players)
             player.GetComponent<PlayerManager>().Freeze();
 
         Invoke("Reset", restartDelay);
+        */
     }
 
+    /*
     public void Reset() 
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
 
+        networkManager.ServerChangeScene(SceneManager.GetActiveScene().name);
+    }*/
+    
 }

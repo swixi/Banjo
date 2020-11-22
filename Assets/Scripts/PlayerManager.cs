@@ -1,22 +1,33 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using Mirror;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : NetworkBehaviour
 {
     public Rigidbody playerRB;
     public float force = 10f;
     public Transform playerTransform;
 
-    //used only for testing, sets the controls for another player
-    public int controlMode = 0;
-
     //arbitrary default, gets used if e.g. player has never moved or if there is crazy friction that would cause a drop to 0 vel in less than a frame
     private Vector3 lastNonzeroUnitDirection = Vector3.right; 
+
+    Vector3 spawnPoint;
+
+    //public Text debugText;
+
+    enum Direction
+    {
+        UP=0,
+        DOWN=1,
+        LEFT=2,
+        RIGHT=3
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
-    }    
+        spawnPoint = transform.position;
+    }
 
     void Update()
     {
@@ -25,7 +36,7 @@ public class PlayerManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        ForceMode mode = ForceMode.Impulse;
+        
 
         if(playerRB.velocity.magnitude > 0.1)
         {
@@ -35,62 +46,104 @@ public class PlayerManager : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
-        if(controlMode == 0)
+        // only let the local player control their player
+        // don't control other players
+        if(isLocalPlayer) 
         {
-            if(Input.GetKey("w"))
+            //debugText.text = "pressed";
+            //ForceMode mode = ForceMode.Impulse;
+            if(Input.GetKey("w") || Input.GetKey("up"))
             {
-                playerRB.AddForce(0, 0, Time.deltaTime * force, mode);
+                //playerRB.AddForce(0, 0, Time.deltaTime * force, mode);
+                CmdMove(0);
             }
-            if(Input.GetKey("a"))
+            if(Input.GetKey("a") || Input.GetKey("left"))
             {
-                playerRB.AddForce(-(Time.deltaTime * force), 0, 0, mode);
+                //playerRB.AddForce(-(Time.deltaTime * force), 0, 0, mode);
+                CmdMove(1);
             }
-            if(Input.GetKey("s"))
+            if(Input.GetKey("s") || Input.GetKey("down"))
             {
-                playerRB.AddForce(0, 0, -(Time.deltaTime * force), mode);
+                //playerRB.AddForce(0, 0, -(Time.deltaTime * force), mode);
+                CmdMove(2);
             }
-            if(Input.GetKey("d"))
+            if(Input.GetKey("d") || Input.GetKey("right"))
             {
-                playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
+                //playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
+                CmdMove(3);
             }
-        }
-        else
-        {
-            if(Input.GetKey("up"))
+            if(Input.GetKey("f"))
             {
-                playerRB.AddForce(0, 0, Time.deltaTime * force, mode);
-            }
-            if(Input.GetKey("left"))
-            {
-                playerRB.AddForce(-(Time.deltaTime * force), 0, 0, mode);
-            }
-            if(Input.GetKey("down"))
-            {
-                playerRB.AddForce(0, 0, -(Time.deltaTime * force), mode);
-            }
-            if(Input.GetKey("right"))
-            {
-                playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
+                CmdKick();
             }
         }
     }
 
-    public void SetControlMode(int controlMode)
+    [Command]
+    private void CmdMove(int dir)
     {
-        this.controlMode = controlMode;
+        Debug.Log("command " + dir + " " + playerRB.velocity.magnitude + " " + playerRB.position);
+        //RpcMove(dir);
+        ForceMode mode = ForceMode.Impulse;
+        switch(dir)
+        {
+            case 0:
+                playerRB.AddForce(0, 0, Time.deltaTime * force, mode);
+                break;
+            case 1:
+                playerRB.AddForce(-(Time.deltaTime * force), 0, 0, mode);
+                break;
+            case 2:
+                playerRB.AddForce(0, 0, -(Time.deltaTime * force), mode);
+                break;
+            case 3:
+                playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
+                break;
+        }
+    }
+
+    [ClientRpc]
+    private void RpcMove(Direction dir)
+    {
+        ForceMode mode = ForceMode.Impulse;
+        switch(dir)
+        {
+            case Direction.UP:
+                playerRB.AddForce(0, 0, Time.deltaTime * force, mode);
+                break;
+            case Direction.LEFT:
+                playerRB.AddForce(-(Time.deltaTime * force), 0, 0, mode);
+                break;
+            case Direction.DOWN:
+                playerRB.AddForce(0, 0, -(Time.deltaTime * force), mode);
+                break;
+            case Direction.RIGHT:
+                playerRB.AddForce(Time.deltaTime * force, 0, 0, mode);
+                break;
+        }
+    }
+
+    [Command]
+    private void CmdKick()
+    {
+        //validate that this player has the ball
+        RpcKick();
+    }
+
+    [ClientRpc]
+    private void RpcKick()
+    {
+        FindObjectOfType<NetworkManagerBanjo>().KickBall();
+    }
+
+    public void SetToSpawn()
+    {
+        transform.position = spawnPoint;
     }
 
     public void Freeze() 
     {
         force = 0f;
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if(collision.collider.tag == "ball")
-        {
-            collision.collider.GetComponent<BallManager>().SetAttachedPlayer(this);
-        }
     }
 
     //returns a vector which signifies the position of an object which is offset "distance" units from the player 
