@@ -6,8 +6,8 @@ public class BallManager : MonoBehaviour
 {
     public Transform ballTransform; //not needed? just use (this.)transform?
     public Rigidbody ballRB;
-    public float kickForce = 10f;
-    public float offset = 1f;
+    [SerializeField] private float kickForce = 10f;
+    [SerializeField] private float playerOffset = 2f;
 
     private bool attachedToPlayer = false;
     private PlayerManager attachedPlayer;
@@ -34,6 +34,7 @@ public class BallManager : MonoBehaviour
     public void RemoveAttachedPlayer()
     {
         attachedPlayer = null;
+        this.transform.parent = null;
         attachedToPlayer = false;
     }
 
@@ -42,8 +43,9 @@ public class BallManager : MonoBehaviour
     {
         if(attachedToPlayer)
         {
-            float offsetDistance = attachedPlayer.transform.localScale.x + offset;
-            ballTransform.position = attachedPlayer.GetOffset(offsetDistance);
+            // make the ball a child of the player so the ball moves with them
+            this.transform.parent = attachedPlayer.transform;
+            this.transform.localPosition = new Vector3(0, 0, playerOffset);
         }
     }
 
@@ -62,7 +64,7 @@ public class BallManager : MonoBehaviour
 
     public void KickStraight()
     {
-        ballRB.AddForce(kickForce * attachedPlayer.GetUnitDirection(), ForceMode.Impulse);
+        ballRB.AddForce(kickForce * attachedPlayer.GetComponent<Rigidbody>().velocity.normalized, ForceMode.Impulse);
         RemoveAttachedPlayer();
     }
 }
